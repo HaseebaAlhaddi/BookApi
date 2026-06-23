@@ -2,10 +2,11 @@ using System.Linq.Expressions;
 namespace BookApi.Specifications;
 public class BaseSpecification<T>
 {
-    public Expression<Func<T, bool>> Criteria { get; private set; }
-    public Expression<Func<T, object>> OrderBy { get; private set; }
-    public Expression<Func<T, object>> OrderByDescending { get; private set; }
-    public List<Expression<Func<T, object>>> Includes { get; private set; } = new List<Expression<Func<T, object>>>();
+    public Expression<Func<T, bool>>? Criteria { get; private set; }
+    public Expression<Func<T, object>>? OrderBy { get; private set; }
+    public Expression<Func<T, object>>? OrderByDescending { get; private set; }
+    public List<Expression<Func<T, object>>> Includes { get; private set; }
+    = new();
     public int Skip { get; private set; }
 
     public int Take { get; private set; }
