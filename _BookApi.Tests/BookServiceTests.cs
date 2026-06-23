@@ -4,6 +4,7 @@ using BookApi.Exceptions;
 using BookApi.Models;
 using BookApi.Repositories;
 using BookApi.Services;
+using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using Xunit;
 
@@ -11,6 +12,9 @@ namespace BookApi.Tests;
 
 public class BookServiceTests
 {
+    private static IMemoryCache CreateMemoryCache() =>
+        new MemoryCache(new MemoryCacheOptions());
+
     [Fact]
     public async Task GetBookByIdAsync_ReturnsBook_WhenBookExists()
     {
@@ -43,7 +47,8 @@ public class BookServiceTests
 
         var service = new BookService(
             repositoryMock.Object,
-            mapperMock.Object);
+            mapperMock.Object,
+            CreateMemoryCache());
 
         var result = await service.GetBookByIdAsync(1);
 
@@ -70,7 +75,8 @@ GetBookByIdAsync_ShouldThrowException_WhenBookNotFound()
         var service =
             new BookService(
                 repositoryMock.Object,
-                mapperMock.Object);
+                mapperMock.Object,
+                CreateMemoryCache());
 
         // Act + Assert
 
@@ -112,7 +118,8 @@ public async Task CreateBookAsync_ShouldAddBook_WhenDataIsValid()
     var service =
         new BookService(
             repositoryMock.Object,
-            mapperMock.Object);
+            mapperMock.Object,
+            CreateMemoryCache());
 
     // Act
 
@@ -156,7 +163,7 @@ public async Task UpdateBookAsync_ShouldReturnTrue_WhenBookExists()
     var repositoryMock = new Mock<IBookRepository>();
     var mapperMock = new Mock<IMapper>();
     repositoryMock.Setup(r=>r.GetByIdAsync(1)).ReturnsAsync(book);
-    var service = new BookService(repositoryMock.Object, mapperMock.Object);
+    var service = new BookService(repositoryMock.Object, mapperMock.Object, CreateMemoryCache());
     var result = await service.UpdateBookAsync(1, updateBookDto);
     Assert.True(result);
     repositoryMock.Verify(r=>r.UpdateAsync(It.IsAny<Book>()), Times.Once);
@@ -175,7 +182,7 @@ public async Task UpdateBookAsync_ShouldReturnFalse_WhenBookNotFound()
     var repositoryMock = new Mock<IBookRepository>();
     repositoryMock.Setup(r=>r.GetByIdAsync(1)).ReturnsAsync((Book?)null);
     var mapperMock = new Mock<IMapper>();
-    var service = new BookService(repositoryMock.Object, mapperMock.Object);
+    var service = new BookService(repositoryMock.Object, mapperMock.Object, CreateMemoryCache());
     var result = await service.UpdateBookAsync(1, updateBookDto);
     Assert.False(result);
     repositoryMock.Verify(r=>r.UpdateAsync(It.IsAny<Book>()), Times.Never);
@@ -196,7 +203,7 @@ public async Task DeleteBookAsync_ShouldDeleteBook_WhenBookExists()
     var repositoryMock = new Mock<IBookRepository>();
     repositoryMock.Setup(r=>r.GetByIdAsync(1)).ReturnsAsync(book);
     var mapperMock = new Mock<IMapper>();
-    var service = new BookService(repositoryMock.Object, mapperMock.Object);
+    var service = new BookService(repositoryMock.Object, mapperMock.Object, CreateMemoryCache());
     // Act
     var result= await service.DeleteBookAsync(1);
     Assert.True(result);
@@ -210,7 +217,7 @@ public async Task DeleteBookAsync_ShouldReturnFalse_WhenBookNotFound()
     var repositoryMock = new Mock<IBookRepository>();
     repositoryMock.Setup(r=>r.GetByIdAsync(1)).ReturnsAsync((Book?)null);
     var mapperMock = new Mock<IMapper>();
-    var service = new BookService(repositoryMock.Object, mapperMock.Object);
+    var service = new BookService(repositoryMock.Object, mapperMock.Object, CreateMemoryCache());
     var result = await service.DeleteBookAsync(1);
     Assert.False(result);
     repositoryMock.Verify(r=>r.DeleteAsync(It.IsAny<Book>()), Times.Never);
