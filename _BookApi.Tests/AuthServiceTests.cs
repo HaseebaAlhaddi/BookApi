@@ -1,4 +1,5 @@
 using BookApi.DTOs;
+using BookApi.Exceptions;
 using BookApi.Models;
 using BookApi.Repositories;
 using BookApi.Services;
@@ -24,7 +25,7 @@ public class AuthServiceTests
         var configurationMock = new Mock<IConfiguration>();
         var authService = new AuthService(userRepositoryMock.Object, configurationMock.Object);
         // Act
-        await Assert.ThrowsAsync<Exception>(() => authService.LoginAsync(loginDto));
+        await Assert.ThrowsAsync<UnauthorizedException>(() => authService.LoginAsync(loginDto));
 
     }
     [Fact]
@@ -64,7 +65,7 @@ public class AuthServiceTests
 
     // Act + Assert
 
-    await Assert.ThrowsAsync<Exception>(
+    await Assert.ThrowsAsync<UnauthorizedException>(
         () => authService.LoginAsync(loginDto));
 
 
@@ -162,7 +163,7 @@ public class AuthServiceTests
         var configurationMock = new Mock<IConfiguration>();
         var authService = new AuthService(userRepositoryMock.Object, configurationMock.Object);
         // Act + Assert
-        await Assert.ThrowsAsync<Exception>(() => authService.RegisterAsync(registerDto));
+        await Assert.ThrowsAsync<BadRequestException>(() => authService.RegisterAsync(registerDto));
         userRepositoryMock.Verify(r => r.AddAsync(It.IsAny<User>()), Times.Never);
         userRepositoryMock.Verify(r => r.SaveChangesAsync(), Times.Never);
     }

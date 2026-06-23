@@ -4,7 +4,7 @@ public class BookSpecification : BaseSpecification<Book>
 {
     public BookSpecification(string? search, string? sortBy, int page, int pageSize)
     {
-       AddInclude(b => b.Category);
+       AddInclude(b => b.Category!);
         if (!string.IsNullOrWhiteSpace(search))
         {
             AddCriteria(b => b.Title.Contains(search) || b.Author.Contains(search));

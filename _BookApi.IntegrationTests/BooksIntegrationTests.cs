@@ -6,10 +6,10 @@ using System.Text.Json;
 using Xunit;
 
 namespace BookApi.IntegrationTests;
-public class BooksIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+public class BooksIntegrationTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
-    public BooksIntegrationTests(WebApplicationFactory<Program> factory)
+    public BooksIntegrationTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
