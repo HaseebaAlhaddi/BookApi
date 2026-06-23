@@ -90,6 +90,18 @@ Repositories
 DTOs
 Models
 Validators
+
+## What I Learned
+
+- ASP.NET Core Web API
+- Entity Framework Core
+- JWT Authentication
+- Docker
+- File Uploads
+- Rate Limiting
+- Specification Pattern
+- Integration Testing
+- Caching
 Middleware
 Specifications
 Tests
